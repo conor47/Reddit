@@ -2,6 +2,7 @@
 
 // In typeORM entities are like models 
 
+import { IsEmail, Length } from "class-validator";
 import {Entity, PrimaryGeneratedColumn, Column, BaseEntity, Index, CreateDateColumn, UpdateDateColumn} from "typeorm";
 
 @Entity('users')
@@ -17,15 +18,18 @@ export class User extends BaseEntity {
     
     // adds an index on these fields which improves performance when querying the database
     @Index()
+    @IsEmail()
     @Column({unique:true})
-    email : String
+    email : string
 
     @Index()
+    @Length(3, 20, {message : "Username must be atleast 3 characters long"})
     @Column({unique:true})
-    username : String
+    username : string
 
     @Column()
-    password : String
+    @Length(6)
+    password : string
 
     // a build in typeorm property decorator that allows us to create a created at column
     @CreateDateColumn()
