@@ -3,7 +3,9 @@
 // In typeORM entities are like models 
 
 import { IsEmail, Length } from "class-validator";
-import {Entity, PrimaryGeneratedColumn, Column, BaseEntity, Index, CreateDateColumn, UpdateDateColumn} from "typeorm";
+import {Entity, PrimaryGeneratedColumn, Column, BaseEntity, Index, CreateDateColumn, UpdateDateColumn, BeforeInsert} from "typeorm";
+import bcrypt from 'bcrypt'
+import { classToPlain , Exclude} from 'class-transformer'
 
 @Entity('users')
 export class User extends BaseEntity {
@@ -13,6 +15,9 @@ export class User extends BaseEntity {
         super()
         Object.assign(this,user)
     }
+
+    // imported from class-transformer. Allows us to remove properties from objects
+    @Exclude()
     @PrimaryGeneratedColumn()
     id: number;
     
@@ -23,12 +28,13 @@ export class User extends BaseEntity {
     email : string
 
     @Index()
-    @Length(3, 20, {message : "Username must be atleast 3 characters long"})
+    @Length(3, 255, {message : "Username must be atleast 3 characters long"})
     @Column({unique:true})
     username : string
 
+    @Exclude()
     @Column()
-    @Length(6)
+    @Length(6,255)
     password : string
 
     // a build in typeorm property decorator that allows us to create a created at column
@@ -38,4 +44,18 @@ export class User extends BaseEntity {
     // a build in typeorm property decorator that allows us to create an updated at column
     @UpdateDateColumn()
     updatedAt : Date
+
+    // this will run before the entity is inserted into the database. We are hashing the passwords
+    // using bcrypt 
+    @BeforeInsert()
+    async hashPassword(){
+        this.password = await bcrypt.hash(this.password, 6)
+    }
+
+    // here we are overriding the toJson method. This will transform the class object to a plain object.
+    // Will also go through and if the property has the exclude decorator it will hide it. This means that our 
+    // responses returned to the user will not contain the id or password
+    toJSON(){
+        return classToPlain(this)
+    }
 }
