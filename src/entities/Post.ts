@@ -19,4 +19,23 @@ export default class Post extends Entity {
         Object.assign(this,user)
     }
 
+    // 7 character id for posts
+    @Index()
+    @Column()
+    identifier : string
+
+
+    @Column()
+    title : string
+
+    @Index()
+    @Column()
+    slug : string
+
+    @Column({nullable :true, type : 'text'})
+    body : string
+
+    @Column()
+    subName: string
+
 }
