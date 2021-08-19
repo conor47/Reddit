@@ -1,14 +1,15 @@
 import { Request, Response, Router } from "express";
-import { validate } from "class-validator";
+import { validate, isEmpty } from "class-validator";
+import bcrypt from 'bcrypt'
 
 import { User } from "../entities/User";
 
-
+// register route for handling POST requests to /api/auth/register
 const register = async (req: Request, res: Response) => {
     const {email, username, password} = req.body
 
     try{
-        // todo Validate data
+        // Validate data
         let errors:any = {}
         const emailUser = await User.findOne({email})
         const usernameUser = await User.findOne({username})
@@ -20,7 +21,7 @@ const register = async (req: Request, res: Response) => {
             return res.status(400).json(errors)
         }
 
-        // todo Create the user
+        // Create the user
         const user = new User({email, password, username})
 
         errors = await validate(user)
@@ -28,7 +29,7 @@ const register = async (req: Request, res: Response) => {
 
         await user.save()
 
-        // todo Return the user
+        // Return the user
         return res.json(user)
     } catch (err){
         console.log(err);
@@ -37,7 +38,34 @@ const register = async (req: Request, res: Response) => {
     }
 }
 
+// login route for handling POST requests to /api/auth/login
+const login = async (req : Request, res : Response) => {
+    const {username, password} = req.body
+
+    try {
+        let errors : any = {}
+
+        if(isEmpty(username)) errors.username = "Username must not be empty"
+        if(isEmpty(password)) errors.password = "Password must not be empty"
+        if(Object.keys(errors).length > 0) return res.status(400).json(errors)
+        const user = await User.findOne({username})
+
+        if(!user) return res.status(404).json({error : "User not found"})
+
+        const passwordMatches = await bcrypt.compare(password, user.password)
+        if(!passwordMatches){
+            return res.status(401).json({password : "password is incorrect"})
+        }
+
+        return res.json(user)
+
+    } catch (error) {
+        
+    }
+}
+
 const router = Router()
 router.post('/register', register)
+router.post('/login', login)
 
 export default router
