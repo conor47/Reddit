@@ -5,6 +5,7 @@ import jwt from 'jsonwebtoken'
 import cookie from 'cookie'
 
 import { User } from "../entities/User";
+import auth from "../middleware/auth"
 
 // register route for handling POST requests to /api/auth/register
 const register = async (req: Request, res: Response) => {
@@ -79,29 +80,34 @@ const login = async (req : Request, res : Response) => {
     }
 }
 
+// route for testing whether a user is logged in 
 const me = async (req : Request, res : Response) => {
-    try {
-        const token = req.cookies.token
-        if(!token) throw new Error('Unauthenticated')
-
-        const {username} : any = jwt.verify(token, process.env.JWT_SECRET)
-
-        const user = await User.findOne({username})
-
-        if(!user) throw new Error('Unauthenticated')
-        
-        return res.json(user)
-        
-    } catch (error) {
-        console.log(error);
-        return res.status(401).json({error : error.message})
-    }
+  return res.json(res.locals.user)
 }
+
+// a route for logging a user out
+const logout = (_ : Request, res : Response) => {
+
+    // to remove a cooke we cannot simply request that the client deletes the cookie. We essentially override
+    // the current cookie with a new cookie that expires immediately. When the cookie expires the browser will delete it
+    res.set('Set-Cookie', cookie.serialize('token', '', {
+        httpOnly:true,
+            secure: process.env.NODE_ENV ===  'production',
+            sameSite:'strict',
+            expires: new Date(0),
+            path:'/'
+    }))
+
+    return res.status(200).json({success:true})
+    
+}
+
 
 
 const router = Router()
 router.post('/register', register)
 router.post('/login', login)
-router.get('/me', me)
+router.get('/me',auth, me)
+router.get('/logout',auth, logout)
 
 export default router
