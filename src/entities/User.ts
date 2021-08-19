@@ -3,12 +3,15 @@
 // In typeORM entities are like models 
 
 import { IsEmail, Length } from "class-validator";
-import {Entity, PrimaryGeneratedColumn, Column, BaseEntity, Index, CreateDateColumn, UpdateDateColumn, BeforeInsert} from "typeorm";
+import {Entity as ToEntity, Column, Index, BeforeInsert} from "typeorm";
 import bcrypt from 'bcrypt'
-import { classToPlain , Exclude} from 'class-transformer'
+import { Exclude} from 'class-transformer'
 
-@Entity('users')
-export class User extends BaseEntity {
+// we import our abstract entity which we will extend
+import Entity from "./Entity"
+
+@ToEntity('users')
+export default class User extends Entity {
 
     // in a partial , some of the fields are allowed to be nullable
     constructor(user: Partial<User>){
@@ -16,11 +19,6 @@ export class User extends BaseEntity {
         Object.assign(this,user)
     }
 
-    // imported from class-transformer. Allows us to remove properties from objects
-    @Exclude()
-    @PrimaryGeneratedColumn()
-    id: number;
-    
     // adds an index on these fields which improves performance when querying the database
     @Index()
     @IsEmail()
@@ -37,14 +35,6 @@ export class User extends BaseEntity {
     @Length(6,255)
     password : string
 
-    // a build in typeorm property decorator that allows us to create a created at column
-    @CreateDateColumn()
-    createdAt : Date
-
-    // a build in typeorm property decorator that allows us to create an updated at column
-    @UpdateDateColumn()
-    updatedAt : Date
-
     // this will run before the entity is inserted into the database. We are hashing the passwords
     // using bcrypt 
     @BeforeInsert()
@@ -52,10 +42,4 @@ export class User extends BaseEntity {
         this.password = await bcrypt.hash(this.password, 6)
     }
 
-    // here we are overriding the toJson method. This will transform the class object to a plain object.
-    // Will also go through and if the property has the exclude decorator it will hide it. This means that our 
-    // responses returned to the user will not contain the id or password
-    toJSON(){
-        return classToPlain(this)
-    }
 }
