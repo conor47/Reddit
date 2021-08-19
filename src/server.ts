@@ -10,6 +10,7 @@ import cookieParser from "cookie-parser";
 dotenv.config()
 
 import authRoutes from './routes/auth'
+import postRoutes from './routes/posts'
 import trim from'./middleware/trim'
 
 const app = express()
@@ -25,6 +26,7 @@ app.get('/',  (_,res) => {
     res.send("hello world")
 })
 app.use('/api/auth', authRoutes)
+app.use('/api/posts', postRoutes)
 
 app.listen(PORT, async() => {
     console.log(`Server running at http://localhost:${PORT}`);

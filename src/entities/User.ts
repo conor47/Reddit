@@ -3,12 +3,13 @@
 // In typeORM entities are like models 
 
 import { IsEmail, Length } from "class-validator";
-import {Entity as ToEntity, Column, Index, BeforeInsert} from "typeorm";
+import {Entity as ToEntity, Column, Index, BeforeInsert, OneToMany} from "typeorm";
 import bcrypt from 'bcrypt'
 import { Exclude} from 'class-transformer'
 
 // we import our abstract entity which we will extend
 import Entity from "./Entity"
+import Post from "./Post";
 
 @ToEntity('users')
 export default class User extends Entity {
@@ -34,6 +35,10 @@ export default class User extends Entity {
     @Column()
     @Length(6,255)
     password : string
+
+    // here we are defining a one to many relationship
+    @OneToMany(() => Post, post => post.user)
+    posts: Post[];
 
     // this will run before the entity is inserted into the database. We are hashing the passwords
     // using bcrypt 
