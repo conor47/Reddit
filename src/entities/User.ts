@@ -2,21 +2,36 @@
 
 // In typeORM entities are like models 
 
-import {Entity, PrimaryGeneratedColumn, Column} from "typeorm";
+import {Entity, PrimaryGeneratedColumn, Column, BaseEntity, Index, CreateDateColumn, UpdateDateColumn} from "typeorm";
 
 @Entity('users')
-export class User {
+export class User extends BaseEntity {
 
+    // in a partial , some of the fields are allowed to be nullable
+    constructor(user: Partial<User>){
+        super()
+        Object.assign(this,user)
+    }
     @PrimaryGeneratedColumn()
     id: number;
+    
+    // adds an index on these fields which improves performance when querying the database
+    @Index()
+    @Column({unique:true})
+    email : String
+
+    @Index()
+    @Column({unique:true})
+    username : String
 
     @Column()
-    firstName: string;
+    password : String
 
-    @Column()
-    lastName: string;
+    // a build in typeorm property decorator that allows us to create a created at column
+    @CreateDateColumn()
+    createdAt : Date
 
-    @Column()
-    age: number;
-
+    // a build in typeorm property decorator that allows us to create an updated at column
+    @UpdateDateColumn()
+    updatedAt : Date
 }
