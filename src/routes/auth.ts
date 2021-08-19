@@ -1,6 +1,8 @@
 import { Request, Response, Router } from "express";
 import { validate, isEmpty } from "class-validator";
 import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken'
+import cookie from 'cookie'
 
 import { User } from "../entities/User";
 
@@ -56,6 +58,18 @@ const login = async (req : Request, res : Response) => {
         if(!passwordMatches){
             return res.status(401).json({password : "password is incorrect"})
         }
+
+        const token = jwt.sign({username}, process.env.JWT_SECRET)
+
+        // res.set is used to set response headers. We are setting the Set-Cookie header which is used to send
+        // a cookie from the server to the client so that the client can store it and send it back later.
+        res.set('Set-Cookie', cookie.serialize('token', token, {
+            httpOnly:true,
+            secure: process.env.NODE_ENV ===  'production',
+            sameSite:'strict',
+            maxAge:3600,
+            path:'/'
+        }))
 
         return res.json(user)
 
