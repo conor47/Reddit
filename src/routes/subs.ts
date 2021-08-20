@@ -18,6 +18,7 @@ const createSub = async (req : Request, res : Response) => {
         if(isEmpty(title.trim)) errors.title = "Title must not be empty"
 
         const sub = await getRepository(Sub)
+        // using querybuilder we build a custom query on the subs table
         .createQueryBuilder('sub')
         // the : indicates that we are going to pass a variable. we passed the name variable
         .where('lower(sub.name) = :name', {name: name.toLowerCase()})

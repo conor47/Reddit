@@ -60,7 +60,7 @@ const login = async (req : Request, res : Response) => {
             return res.status(401).json({password : "password is incorrect"})
         }
 
-        const token = jwt.sign({username}, process.env.JWT_SECRET)
+        const token = jwt.sign({username}, process.env.JWT_SECRET!)
 
         // res.set is used to set response headers. We are setting the Set-Cookie header which is used to send
         // a cookie from the server to the client so that the client can store it and send it back later.
@@ -76,12 +76,13 @@ const login = async (req : Request, res : Response) => {
 
     } catch (error) {
         console.log(error);
+        return res.json({error: "Something went wrong"})
         
     }
 }
 
 // route for testing whether a user is logged in 
-const me = async (req : Request, res : Response) => {
+const me = async (_ : Request, res : Response) => {
   return res.json(res.locals.user)
 }
 

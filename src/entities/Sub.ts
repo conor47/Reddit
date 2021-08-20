@@ -3,7 +3,7 @@
 // In typeORM entities are like models 
 
 
-import {Entity as TOEntity, Column, Index, BeforeInsert, ManyToOne, JoinColumn, Unique, OneToMany} from "typeorm";
+import {Entity as TOEntity, Column, Index,  ManyToOne, JoinColumn,  OneToMany} from "typeorm";
 
 // we import our abstract entity which we will extend
 import Entity from "./Entity"

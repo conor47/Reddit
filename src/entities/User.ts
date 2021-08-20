@@ -3,7 +3,7 @@
 // In typeORM entities are like models 
 
 import { IsEmail, Length } from "class-validator";
-import {Entity as ToEntity, Column, Index, BeforeInsert, OneToMany, Unique} from "typeorm";
+import {Entity as ToEntity, Column, Index, BeforeInsert, OneToMany} from "typeorm";
 import bcrypt from 'bcrypt'
 import { Exclude} from 'class-transformer'
 
