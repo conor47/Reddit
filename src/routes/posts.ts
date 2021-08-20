@@ -30,11 +30,51 @@ const createPost = async(req : Request, res : Response) => {
     }
 }
 
+// A route for returning all of the recent posts across the subs
+
+const getPosts = async (_ : Request, res : Response) => {
+    try {
+        
+        // we fetch all posts. We order them by createdAt in descending order
+        const posts = await Post.find({
+            order : {createdAt : "DESC"},
+        })
+        return res.json(posts)
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({error : "Something went wrong"})
+        
+    }
+}
+
+// A route for fetching a single post
+
+const getPost = async (req : Request, res : Response) => {
+    const {identifier, slug} = req.params
+    
+    try {
+        
+        // we fetch all posts. We order them by createdAt in descending order
+        const post = await Post.findOneOrFail({identifier, slug})
+        return res.json(post)
+
+    } catch (error) {
+        console.log(error);
+        return res.status(404).json({error : "Post not found"})
+        
+    }
+}
+
 
 const router = Router()
 
 // if we get to the createPost function it means we have a user as if not an error would have been thrown
 // from inside the auth middleware
 router.post('/', auth, createPost)
+
+router.get('/',  getPosts)
+
+router.get('/:identifier/:slug',  getPost)
 
 export default router

@@ -5,7 +5,7 @@
    "username": "newuser",
    "password": "root",
    "database": "reddit",
-   "synchronize": true,
+   "synchronize": false,
    "logging": true,
    "entities": [
       "src/entities/**/*.ts"
