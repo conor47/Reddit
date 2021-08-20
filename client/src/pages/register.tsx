@@ -11,7 +11,7 @@ export default function Register() {
       </Head>
 
       <div
-        className="w-40 h-screen bg-center bg-cover"
+        className="h-screen bg-center bg-cover w-36"
         style={{ backgroundImage: "url('/images/stars.jpg')" }}
       ></div>
       <div className="flex flex-col justify-center pl-6">
@@ -34,21 +34,21 @@ export default function Register() {
             <div className="mb-2">
               <input
                 type="email"
-                className="w-full px-3 py-2 bg-gray-100 border-gray-400 rouded"
+                className="w-full px-3 py-3 transition duration-200 border border-gray-300 outline-none bg-gray-50 rouded focus:bg-white hover:bg-white"
                 placeholder="email"
               />
             </div>
             <div className="mb-2">
               <input
                 type="text"
-                className="w-full px-3 py-2 bg-gray-100 border-gray-400 rouded"
+                className="w-full px-3 py-3 transition duration-200 border border-gray-300 outline-none bg-gray-50 rouded focus:bg-white hover:bg-white"
                 placeholder="username"
               />
             </div>
             <div className="mb-2">
               <input
                 type="password"
-                className="w-full px-3 py-2 bg-gray-100 border-gray-400"
+                className="w-full px-3 py-3 transition duration-200 border border-gray-300 outline-none bg-gray-50 rouded focus:bg-white hover:bg-white"
                 placeholder="password"
               />
             </div>
@@ -59,7 +59,7 @@ export default function Register() {
           <small>
             Already a redditor ?{" "}
             <Link href="/login">
-              <a className="ml-1 text-blue-500 uppercase">Login</a>
+              <a className="ml-1 text-blue-500 uppercase">Log In</a>
             </Link>
           </small>
         </div>
