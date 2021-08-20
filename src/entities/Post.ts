@@ -3,14 +3,15 @@
 // In typeORM entities are like models 
 
 import { IsEmail, Length } from "class-validator";
-import {Entity as ToEntity, Column, Index, BeforeInsert} from "typeorm";
+import {Entity as TOEntity, Column, Index, BeforeInsert, ManyToOne, JoinColumn} from "typeorm";
 import bcrypt from 'bcrypt'
 import { Exclude} from 'class-transformer'
 
 // we import our abstract entity which we will extend
 import Entity from "./Entity"
+import User from "./User";
 
-@ToEntity('users')
+@TOEntity('posts')
 export default class Post extends Entity {
 
     // in a partial , some of the fields are allowed to be nullable
@@ -37,5 +38,11 @@ export default class Post extends Entity {
 
     @Column()
     subName: string
+
+    // here we are defining a many to one relationship between posts and users
+    @ManyToOne(() => User, (user) => user.posts)
+    @JoinColumn({name:"username", referencedColumnName:"username"})
+    user: User;
+
 
 }

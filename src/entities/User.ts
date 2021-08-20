@@ -3,7 +3,7 @@
 // In typeORM entities are like models 
 
 import { IsEmail, Length } from "class-validator";
-import {Entity as ToEntity, Column, Index, BeforeInsert, OneToMany} from "typeorm";
+import {Entity as ToEntity, Column, Index, BeforeInsert, OneToMany, Unique} from "typeorm";
 import bcrypt from 'bcrypt'
 import { Exclude} from 'class-transformer'
 
@@ -23,10 +23,10 @@ export default class User extends Entity {
     // adds an index on these fields which improves performance when querying the database
     @Index()
     @IsEmail()
-    @Column({unique:true})
+    @Column()
     email : string
 
-    @Index()
+    @Index({unique:true})
     @Length(3, 255, {message : "Username must be atleast 3 characters long"})
     @Column({unique:true})
     username : string
