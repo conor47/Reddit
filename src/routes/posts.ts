@@ -56,7 +56,9 @@ const getPost = async (req : Request, res : Response) => {
     try {
         
         // we fetch all posts. We order them by createdAt in descending order
-        const post = await Post.findOneOrFail({identifier, slug})
+        const post = await Post.findOneOrFail({identifier, slug}, {
+            relations : ['sub']
+        })
         return res.json(post)
 
     } catch (error) {

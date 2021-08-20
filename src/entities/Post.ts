@@ -2,13 +2,14 @@
 
 // In typeORM entities are like models 
 
-import {Entity as TOEntity, Column, Index, BeforeInsert, ManyToOne, JoinColumn} from "typeorm";
+import {Entity as TOEntity, Column, Index, BeforeInsert, ManyToOne, JoinColumn, OneToMany} from "typeorm";
 
 // we import our abstract entity which we will extend
 import Entity from "./Entity"
 import User from "./User";
 import { makeId, slugify } from "../util/helpers";
 import Sub from "./Sub";
+import Comment from "./Comment";
 
 @TOEntity('posts')
 export default class Post extends Entity {
@@ -46,6 +47,10 @@ export default class Post extends Entity {
     @ManyToOne(() => Sub, (sub) => sub.posts)
     @JoinColumn({name:"subName", referencedColumnName:"name"})
     sub: Sub;
+
+    // The second arugment here is specifying the inverse relationship. 
+    @OneToMany(() => Comment, comment => comment.post)
+    comments : Comment[]
 
     @BeforeInsert()
     makeIdAndSlug(){
