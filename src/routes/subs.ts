@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { IsEmpty } from "class-validator";
+import { isEmpty } from "class-validator";
 import { getRepository } from "typeorm";
 
 import User from "../entities/User";
@@ -14,8 +14,8 @@ const createSub = async (req : Request, res : Response) => {
     try {
         let errors: any = {}
 
-        if(IsEmpty(name)) errors.name = "Name must not be empty"
-        if(IsEmpty(title)) errors.title = "Title must not be empty"
+        if(isEmpty(name.trim)) errors.name = "Name must not be empty"
+        if(isEmpty(title.trim)) errors.title = "Title must not be empty"
 
         const sub = await getRepository(Sub)
         .createQueryBuilder('sub')

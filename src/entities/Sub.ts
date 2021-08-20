@@ -41,5 +41,5 @@ export default class Sub extends Entity {
     user: User;
 
     @OneToMany(() => Post, post => post.sub)
-    post : Post[]
+    posts  : Post[]
 }
