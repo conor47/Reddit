@@ -2,14 +2,13 @@
 
 // In typeORM entities are like models 
 
-import { IsEmail, Length } from "class-validator";
 import {Entity as TOEntity, Column, Index, BeforeInsert, ManyToOne, JoinColumn} from "typeorm";
-import bcrypt from 'bcrypt'
-import { Exclude} from 'class-transformer'
 
 // we import our abstract entity which we will extend
 import Entity from "./Entity"
 import User from "./User";
+import { makeId, slugify } from "../util/helpers";
+import Sub from "./Sub";
 
 @TOEntity('posts')
 export default class Post extends Entity {
@@ -43,6 +42,14 @@ export default class Post extends Entity {
     @ManyToOne(() => User, (user) => user.posts)
     @JoinColumn({name:"username", referencedColumnName:"username"})
     user: User;
+   
+    @ManyToOne(() => Sub, (sub) => sub.posts)
+    @JoinColumn({name:"subName", referencedColumnName:"name"})
+    sub: Sub;
 
-
+    @BeforeInsert()
+    makeIdAndSlug(){
+        this.identifier = makeId(7)
+        this.slug = slugify(this.title)
+    }
 }

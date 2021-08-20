@@ -1,6 +1,8 @@
+// A utility function for generating Id strings of a given length
+
 export function makeId(length: number): string {
-    let result           = '';
-    const characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = '';
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     const charactersLength = characters.length;
     for ( let i = 0; i < length; i++ ) {
       result += characters.charAt(Math.floor(Math.random() * 
@@ -8,6 +10,9 @@ export function makeId(length: number): string {
    }
    return result;
 }
+
+// A utility function for generating URL slugs. Given a string it will replace and invalid chars, perform accent swaps
+// and stip out any white space / extra -
 
 export function slugify (str: string) : string {
     str = str.trim();
