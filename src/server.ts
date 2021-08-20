@@ -11,6 +11,7 @@ dotenv.config()
 
 import authRoutes from './routes/auth'
 import postRoutes from './routes/posts'
+import subRoutes from './routes/subs'
 import trim from'./middleware/trim'
 
 const app = express()
@@ -27,6 +28,7 @@ app.get('/',  (_,res) => {
 })
 app.use('/api/auth', authRoutes)
 app.use('/api/posts', postRoutes)
+app.use('/api/subs', subRoutes)
 
 app.listen(PORT, async() => {
     console.log(`Server running at http://localhost:${PORT}`);
