@@ -20,10 +20,14 @@ export default function Register() {
 
     try {
       // we can use this simplified URL since we defined a baseURL in the app.tsx file
-      await Axios.post("/auth/login", {
-        password,
-        username,
-      });
+      await Axios.post(
+        "/auth/login",
+        {
+          password,
+          username,
+        },
+        { withCredentials: true } // this option allows the server to set cookies
+      );
 
       router.push("/");
     } catch (error) {

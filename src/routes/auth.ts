@@ -7,7 +7,7 @@ import cookie from "cookie";
 import User from "../entities/User";
 import auth from "../middleware/auth";
 
-// this function is to format our errors better. Without this the typeorm errors returned are more
+// this function   is to format our errors better. Without this the typeorm errors returned are more
 // difficult to parse. Now we can easily access the errors for displaying on the frontend
 const mapErrors = (errors: Object[]) => {
   return errors.reduce((prev: any, err: any) => {
@@ -63,7 +63,7 @@ const login = async (req: Request, res: Response) => {
     if (Object.keys(errors).length > 0) return res.status(400).json(errors);
     const user = await User.findOne({ username });
 
-    if (!user) return res.status(404).json({ error: "User not found" });
+    if (!user) return res.status(404).json({ username: "User not found" });
 
     const passwordMatches = await bcrypt.compare(password, user.password);
     if (!passwordMatches) {
