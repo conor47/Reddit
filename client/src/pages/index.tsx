@@ -73,6 +73,24 @@ export default function Home() {
                   <a className="my-1 text-lg font-medium">{post.title}</a>
                 </Link>
                 {post.body && <p className="my-1 text-sm">{post.body}</p>}
+                <div className="flex">
+                  <Link href={post.url}>
+                    <a>
+                      <div className="px-1 py-1 mr-1 text-xs text-gray-400 rounded cursor-pointer hover:bg-gray-200">
+                        <i className="mr-1 fas fa-comment-alt fa-xs"></i>
+                        <span className="font-bold">20 comments</span>
+                      </div>
+                    </a>
+                  </Link>
+                  <div className="px-1 py-1 mr-1 text-xs text-gray-400 rounded cursor-pointer hover:bg-gray-200">
+                    <i className="mr-1 fas fa-bookmark fa-xs"></i>
+                    <span className="font-bold">Share</span>
+                  </div>
+                  <div className="px-1 py-1 mr-1 text-xs text-gray-400 rounded cursor-pointer hover:bg-gray-200">
+                    <i className="mr-1 fas fa-share fa-xs"></i>
+                    <span className="font-bold">Save</span>
+                  </div>
+                </div>
               </div>
             </div>
           ))}
