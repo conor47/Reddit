@@ -1,3 +1,5 @@
+/* eslint-disable @next/next/link-passhref */
+/* eslint-disable @next/next/no-img-element */
 import axios from "axios";
 import Head from "next/head";
 import Link from "next/link";
@@ -53,9 +55,9 @@ export default function Home() {
                   <p className="text-gray-500 text-excess">
                     <span className="mx-1">•</span>
                     Posted by
-                    <Link href={`/u/user`}>
+                    <Link href={`/u/${post.username}`}>
                       <a href="" className="mx-1 hover:underline">
-                        /u/user
+                        /u/{post.username}
                       </a>
                     </Link>
                     <Link
@@ -67,6 +69,10 @@ export default function Home() {
                     </Link>
                   </p>
                 </div>
+                <Link href={post.url}>
+                  <a className="my-1 text-lg font-medium">{post.title}</a>
+                </Link>
+                {post.body && <p className="my-1 text-sm">{post.body}</p>}
               </div>
             </div>
           ))}
