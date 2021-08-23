@@ -1,4 +1,7 @@
 module.exports = {
+  images: {
+    domains: ["www.gravatar.com"],
+  },
   webpack(config) {
     config.module.rules.push({
       test: /\.svg$/,

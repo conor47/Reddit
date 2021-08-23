@@ -1,8 +1,13 @@
 import axios from "axios";
 import Head from "next/head";
-import { useEffect, useState } from "react";
+import Link from "next/link";
+import { Fragment, useEffect, useState } from "react";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
 
 import { Post } from "../types";
+
+dayjs.extend(relativeTime);
 
 export default function Home() {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -32,7 +37,36 @@ export default function Home() {
               </div>
               {/* post data section */}
               <div className="w-full p-2">
-                <p>{post.body}</p>
+                <div className="flex items-center">
+                  <Link href={`/r/${post.subName}`}>
+                    <Fragment>
+                      <img
+                        src="https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"
+                        alt="gravatar"
+                        className="h-6 mr-1 rounded-full cursor-pointer"
+                      />
+                      <a className="text-xs font-bold cursor-pointer hover:underline">
+                        /r/{post.subName}
+                      </a>
+                    </Fragment>
+                  </Link>
+                  <p className="text-gray-500 text-excess">
+                    <span className="mx-1">•</span>
+                    Posted by
+                    <Link href={`/u/user`}>
+                      <a href="" className="mx-1 hover:underline">
+                        /u/user
+                      </a>
+                    </Link>
+                    <Link
+                      href={`/r/${post.subName}/${post.identifier}/${post.slug}`}
+                    >
+                      <a href="" className="mx-1 hover:underline">
+                        {dayjs(post.createdAt).fromNow()}
+                      </a>
+                    </Link>
+                  </p>
+                </div>
               </div>
             </div>
           ))}
