@@ -13,7 +13,7 @@ import { Post } from "../types";
 dayjs.extend(relativeTime);
 
 // To implement server side dering for the posts all we need to do is destructure props in the
-// functional component below. These props are returned by the function at the bottom, getServerSideProps
+// functional component below. These props are returned by the function at the bottom, getServerSideProps©
 
 export default function Home() {
   const [posts, setPosts] = useState<Post[]>([]);

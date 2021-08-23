@@ -20,6 +20,7 @@ import User from "./User";
 import { makeId, slugify } from "../util/helpers";
 import Sub from "./Sub";
 import Comment from "./Comment";
+import Vote from "./Vote";
 
 @TOEntity("posts")
 export default class Post extends Entity {
@@ -65,6 +66,9 @@ export default class Post extends Entity {
   // The second arugment here is specifying the inverse relationship.
   @OneToMany(() => Comment, (comment) => comment.post)
   comments: Comment[];
+
+  @OneToMany(() => Vote, (vote) => vote.comment)
+  vote: Vote[];
 
   @Expose() get url(): string {
     return `/r/${this.subName}/${this.identifier}/${this.slug}`;
