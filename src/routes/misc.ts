@@ -36,12 +36,29 @@ const vote = async (req: Request, res: Response) => {
       // if no vote and value is 0 return error
       return res.status(404).json({ error: "vote not found" });
     } else if (!vote) {
-      // if we reach here we know that we have a value but have not voted yet , this we create the vote
+      // if we reach here we know that we have a value but have not voted yet , thus we create the vote
       // and add the comment if its a vote on a comment or add the post if its a vote on a post
       vote = new Vote({ user, value });
       if (comment) vote.comment = comment;
       else vote.post = post;
+      await vote.save();
+
+      //   if we reach here then we know that the vote and the value exists. We will now have to update it.
+    } else if (value === 0) {
+      // Remote vote
+      await vote.remove();
+    } else if (vote.value !== value) {
+      // update vote
+      vote.value = value;
+      await vote.save();
     }
+
+    post = await Post.findOneOrFail(
+      { identifier, slug },
+      { relations: ["comments", "sub", "vote"] }
+    );
+
+    return res.json(post);
   } catch (error) {
     console.log(error);
     return res.status(500).json({ error: "something went wrong" });

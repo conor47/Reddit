@@ -23,7 +23,7 @@ export default class Vote extends Entity {
   user: User;
 
   @Column()
-  username: User;
+  username: string;
 
   @ManyToOne(() => Post)
   post: Post;
