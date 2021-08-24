@@ -4,6 +4,7 @@ import Link from "next/link";
 import Axios from "axios";
 import { useRouter } from "next/router";
 
+import { useAuthDispatch } from "../context/auth";
 import InputGroup from "../components/InputGroup";
 
 export default function Register() {
@@ -11,6 +12,8 @@ export default function Register() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState<any>({});
+
+  const dispatch = useAuthDispatch();
 
   const router = useRouter();
 
@@ -20,7 +23,7 @@ export default function Register() {
 
     try {
       // we can use this simplified URL since we defined a baseURL in the app.tsx file
-      await Axios.post(
+      const res = await Axios.post(
         "/auth/login",
         {
           password,
@@ -29,6 +32,7 @@ export default function Register() {
         { withCredentials: true } // this option allows the server to set cookies
       );
 
+      dispatch({ type: "LOGIN", payload: res.data });
       router.push("/");
     } catch (error) {
       setErrors(error.response.data);
