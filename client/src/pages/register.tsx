@@ -4,7 +4,8 @@ import Link from "next/link";
 import Axios from "axios";
 import { useRouter } from "next/router";
 
-import InputGroup from "../components/inputGroup";
+import { useAuthState } from "../context/auth";
+import InputGroup from "../components/InputGroup";
 
 export default function Register() {
   // simple state for our form fields, checkbox and form errors
@@ -14,7 +15,10 @@ export default function Register() {
   const [agreement, setAgreement] = useState(false);
   const [errors, setErrors] = useState<any>({});
 
+  const { authenticated } = useAuthState();
+
   const router = useRouter();
+  if (authenticated) router.push("/");
 
   // event handler for our form
   const submitForm = async (event: FormEvent) => {

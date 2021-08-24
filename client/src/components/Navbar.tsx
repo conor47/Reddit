@@ -6,7 +6,7 @@ import RedditLogo from "../../public/images/redditLogo.svg";
 import axios from "axios";
 
 const Navbar: React.FC = () => {
-  const { authenticated } = useAuthState();
+  const { authenticated, loading } = useAuthState();
   const dispatch = useAuthDispatch();
 
   // function for logging a user out
@@ -44,26 +44,27 @@ const Navbar: React.FC = () => {
       </div>
       {/* Auth buttons */}
       <div className="flex">
-        {authenticated ? (
-          // show logout button
-          <button
-            className="w-32 py-1 mr-4 leading-5 hollow blue button"
-            onClick={logout}
-          >
-            Logout
-          </button>
-        ) : (
-          <Fragment>
-            <Link href="/login">
-              <a className="w-32 py-1 mr-4 leading-5 hollow blue button">
-                Log in
-              </a>
-            </Link>
-            <Link href="/register">
-              <a className="w-32 py-1 leading-5 blue button">Sign Up</a>
-            </Link>
-          </Fragment>
-        )}
+        {!loading &&
+          (authenticated ? (
+            // show logout button
+            <button
+              className="w-32 py-1 mr-4 leading-5 hollow blue button"
+              onClick={logout}
+            >
+              Logout
+            </button>
+          ) : (
+            <Fragment>
+              <Link href="/login">
+                <a className="w-32 py-1 mr-4 leading-5 hollow blue button">
+                  Log in
+                </a>
+              </Link>
+              <Link href="/register">
+                <a className="w-32 py-1 leading-5 blue button">Sign Up</a>
+              </Link>
+            </Fragment>
+          ))}
       </div>
     </div>
   );
