@@ -1,6 +1,7 @@
 // authentication context
 
-import { createContext, useContext, useReducer } from "react";
+import axios from "axios";
+import { createContext, useContext, useEffect, useReducer } from "react";
 import { User } from "../types";
 
 interface State {
@@ -43,10 +44,28 @@ const reducer = (state: State, { type, payload }: Action) => {
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   // we pass in our reducer and the initial state
-  const [state, dispatch] = useReducer(reducer, {
+  const [state, defaultDispatch] = useReducer(reducer, {
     user: null,
     authenticated: false,
   });
+
+  // this is just a quality of life improvment. Saves us having to pass objects each time we are using the dispatch
+  const dispatch = (type: string, payload?: any) => {
+    defaultDispatch({ type, payload });
+  };
+
+  useEffect(() => {
+    // this is an alternative format we can use if we wish to async / await in our useEffect calls
+    async function loadUser() {
+      try {
+        const res = await axios.get("/auth/me");
+        dispatch("LOGIN", res.data);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    loadUser();
+  }, []);
 
   return (
     <DispatchContext.Provider value={dispatch}>

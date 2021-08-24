@@ -32,7 +32,7 @@ export default function Register() {
         { withCredentials: true } // this option allows the server to set cookies
       );
 
-      dispatch({ type: "LOGIN", payload: res.data });
+      dispatch("LOGIN", res.data);
       router.push("/");
     } catch (error) {
       setErrors(error.response.data);

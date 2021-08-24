@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
+
 import User from "../entities/User";
 
 // we have split the original auth middleware into two middleware, auth and user. Now if we have a route that
@@ -9,7 +10,7 @@ import User from "../entities/User";
 export default async (req: Request, res: Response, next: NextFunction) => {
   try {
     const token = req.cookies.token;
-    if (!token) return next;
+    if (!token) return next();
 
     const { username }: any = jwt.verify(token, process.env.JWT_SECRET!);
 

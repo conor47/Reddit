@@ -14,7 +14,7 @@ const Navbar: React.FC = () => {
     axios
       .get("/auth/logout")
       .then(() => {
-        dispatch({ type: "LOGOUT" });
+        dispatch("LOGOUT");
         window.location.reload();
       })
       .catch((err) => console.log(err));
