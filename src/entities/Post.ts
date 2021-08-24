@@ -64,6 +64,8 @@ export default class Post extends Entity {
   sub: Sub;
 
   // The second arugment here is specifying the inverse relationship.
+
+  @Exclude()
   @OneToMany(() => Comment, (comment) => comment.post)
   comments: Comment[];
 

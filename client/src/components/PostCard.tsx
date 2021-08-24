@@ -19,12 +19,20 @@ interface PostCardProps {
   post: Post;
 }
 
-export default function PostCard({ post }) {
+export default function PostCard({ post }: PostCardProps) {
   return (
     <div key={post.identifier} className="flex mb-4 bg-white rounded">
       {/* vote section */}
-      <div className="w-10 text-center bg-gray-200 rounded-l">
-        <p>V</p>
+      <div className="w-10 py-3 text-center bg-gray-200 rounded-l">
+        {/* Upvote */}
+        <div className="w-6 mx-auto text-gray-400 rounded cursor-pointer hover:bg-gray-300 hover:text-red-500">
+          <i className="icon-arrow-up"></i>
+        </div>
+        <p className="text-xs font-bold">{post.voteScore}</p>
+        {/* Downvote */}
+        <div className="w-6 mx-auto text-gray-400 rounded cursor-pointer hover:bg-gray-300 hover:text-blue-500">
+          <i className="icon-arrow-down"></i>
+        </div>
       </div>
       {/* post data section */}
       <div className="w-full p-2">
@@ -65,7 +73,7 @@ export default function PostCard({ post }) {
             <a>
               <ActionButton>
                 <i className="mr-1 fas fa-comment-alt fa-xs"></i>
-                <span className="font-bold">20 comments</span>
+                <span className="font-bold">{post.commentCount} Comments</span>
               </ActionButton>
             </a>
           </Link>
