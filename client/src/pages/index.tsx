@@ -21,7 +21,7 @@ export default function Home() {
   const { data: posts } = useSWR("/posts");
 
   return (
-    <div className="pt-12">
+    <Fragment>
       <Head>
         <title>Reddit: The frontpage of the internet</title>
       </Head>
@@ -33,7 +33,7 @@ export default function Home() {
           ))}
         </div>
       </div>
-    </div>
+    </Fragment>
   );
 }
 // This is a function that will run on the server side before the page is created and rendered and it perform some action. We could fetch
