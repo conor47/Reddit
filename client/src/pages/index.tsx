@@ -7,6 +7,7 @@ import { GetServerSideProps } from "next";
 import { Fragment, useEffect, useState } from "react";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import useSWR from "swr";
 
 import { Post } from "../types";
 import PostCard from "../components/PostCard";
@@ -17,16 +18,7 @@ dayjs.extend(relativeTime);
 // functional component below. These props are returned by the function at the bottom, getServerSideProps©
 
 export default function Home() {
-  const [posts, setPosts] = useState<Post[]>([]);
-
-  // use effect hook for fetching all of the posts
-
-  useEffect(() => {
-    axios
-      .get("/posts")
-      .then((res) => setPosts(res.data))
-      .catch((err) => console.log(err));
-  }, []);
+  const { data: posts } = useSWR("/posts");
 
   return (
     <div className="pt-12">
@@ -36,7 +28,7 @@ export default function Home() {
       <div className="container flex pt-4 mx-auto">
         {/* Posts feed */}
         <div className="w-160">
-          {posts.map((post) => (
+          {posts?.map((post) => (
             <PostCard post={post} key={post.identifier} />
           ))}
         </div>
