@@ -25,9 +25,9 @@ import Vote from "./Vote";
 @TOEntity("posts")
 export default class Post extends Entity {
   // in a partial , some of the fields are allowed to be nullable
-  constructor(user: Partial<Post>) {
+  constructor(post: Partial<Post>) {
     super();
-    Object.assign(this, user);
+    Object.assign(this, post);
   }
 
   // 7 character id for posts

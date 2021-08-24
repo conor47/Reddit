@@ -16,7 +16,7 @@ interface Action {
 }
 
 // creating the state context
-const StateContent = createContext<State>({
+const StateContext = createContext<State>({
   authenticated: false,
   user: null,
   loading: true,
@@ -79,11 +79,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <DispatchContext.Provider value={dispatch}>
-      <StateContent.Provider value={state}>{children}</StateContent.Provider>
+      <StateContext.Provider value={state}>{children}</StateContext.Provider>
     </DispatchContext.Provider>
   );
 };
 
 // Custom hooks for consuming the contexts
-export const useAuthState = () => useContext(StateContent);
+export const useAuthState = () => useContext(StateContext);
 export const useAuthDispatch = () => useContext(DispatchContext);
