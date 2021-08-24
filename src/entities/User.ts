@@ -16,6 +16,7 @@ import { Exclude } from "class-transformer";
 // we import our abstract entity which we will extend
 import Entity from "./Entity";
 import Post from "./Post";
+import Vote from "./Vote";
 
 @ToEntity("users")
 export default class User extends Entity {
@@ -45,6 +46,9 @@ export default class User extends Entity {
   // here we are defining a one to many relationship
   @OneToMany(() => Post, (post) => post.user)
   posts: Post[];
+
+  @OneToMany(() => Vote, (vote) => vote.user)
+  votes: Vote[];
 
   // this will run before the entity is inserted into the database. We are hashing the passwords
   // using bcrypt

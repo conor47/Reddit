@@ -12,7 +12,7 @@ import {
   OneToMany,
   AfterLoad,
 } from "typeorm";
-import { Expose } from "class-transformer";
+import { Exclude, Expose } from "class-transformer";
 
 // we import our abstract entity which we will extend
 import Entity from "./Entity";
@@ -67,11 +67,25 @@ export default class Post extends Entity {
   @OneToMany(() => Comment, (comment) => comment.post)
   comments: Comment[];
 
+  // we will not display the votes objects to maintain user privacy
+  @Exclude()
   @OneToMany(() => Vote, (vote) => vote.post)
-  vote: Vote[];
+  votes: Vote[];
 
   @Expose() get url(): string {
     return `/r/${this.subName}/${this.identifier}/${this.slug}`;
+  }
+
+  // returns the number of comments a post has
+
+  @Expose() get commentCount(): number {
+    return this.comments?.length;
+  }
+
+  // returns the vote count of a post
+
+  @Expose() get voteScore(): number {
+    return this.votes?.reduce((prev, cur) => prev + (cur.value || 0), 0);
   }
 
   //   Below is an additional implementation of the above logic. Here we are creating a virtual field
@@ -81,6 +95,15 @@ export default class Post extends Entity {
   //   createFields() {
   //     this.url = `/r/${this.subName}/${this.identifier}/${this.slug}`;
   //   }
+
+  // function to allow us to determine if a user has already voted on a post
+  protected userVote: number;
+  setUserVote(user: User) {
+    const index = this.votes?.findIndex(
+      (vote) => vote.username === user.username
+    );
+    this.userVote = index > -1 ? this.votes[index].value : 0;
+  }
 
   @BeforeInsert()
   makeIdAndSlug() {
