@@ -4,6 +4,7 @@ import Post from "../entities/Post";
 import Sub from "../entities/Sub";
 
 import auth from "../middleware/auth";
+import user from "../middleware/user";
 
 const createPost = async (req: Request, res: Response) => {
   const { title, body, sub } = req.body;
@@ -36,6 +37,13 @@ const getPosts = async (_: Request, res: Response) => {
       order: { createdAt: "DESC" },
       relations: ["comments", "votes", "sub"],
     });
+
+    // if the user is logged in we want to return the users vote on each post. This will allow us to
+    // display on the frontend which posts a user has voted on
+
+    if (res.locals.user) {
+      posts.forEach((p) => p.setUserVote(res.locals.user));
+    }
     return res.json(posts);
   } catch (error) {
     console.log(error);
@@ -87,12 +95,12 @@ const router = Router();
 
 // if we get to the createPost function it means we have a user as if not an error would have been thrown
 // from inside the auth middleware
-router.post("/", auth, createPost);
+router.post("/", user, auth, createPost);
 
-router.get("/", getPosts);
+router.get("/", user, getPosts);
 
 router.get("/:identifier/:slug", getPost);
 
-router.post("/:identifier/:slug/comments", auth, commentOnPost);
+router.post("/:identifier/:slug/comments", user, auth, commentOnPost);
 
 export default router;
