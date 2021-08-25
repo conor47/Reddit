@@ -18,6 +18,18 @@ dayjs.extend(relativeTime);
 // functional component below. These props are returned by the function at the bottom, getServerSideProps©
 
 export default function Home() {
+  // The below code is replaced by the call to useSWR below
+
+  // const [posts, setPosts] = useState<Post[]>([]);
+
+  // // use effect hook for fetching all of the posts
+
+  // useEffect(() => {
+  //   axios
+  //     .get("/posts")
+  //     .then((res) => setPosts(res.data))
+  //     .catch((err) => console.log(err));
+  // }, []);
   const { data: posts } = useSWR("/posts");
 
   return (
