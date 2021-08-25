@@ -1,6 +1,6 @@
 module.exports = {
   images: {
-    domains: ["www.gravatar.com"],
+    domains: ["www.gravatar.com", "localhost"],
   },
   webpack(config) {
     config.module.rules.push({
