@@ -21,10 +21,18 @@ function App({ Component, pageProps }: AppProps) {
   const authRoutes = ["/register", "/login"];
   const authRoute = authRoutes.includes(pathname);
 
+  const fetcher = async (url: string) => {
+    try {
+      const res = await Axios.get(url);
+      return res.data;
+    } catch (error) {
+      throw error.response.data;
+    }
+  };
   return (
     <SWRConfig
       value={{
-        fetcher: (url) => axios.get(url).then((res) => res.data),
+        fetcher,
         dedupingInterval: 1000,
       }}
     >
