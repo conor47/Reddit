@@ -10,6 +10,8 @@ import Sub from "../entities/Sub";
 import auth from "../middleware/auth";
 import user from "../middleware/user";
 import { makeId } from "../util/helpers";
+import { NextFunction } from "express-serve-static-core";
+import { resourceLimits } from "worker_threads";
 
 const createSub = async (req: Request, res: Response) => {
   const { name, title, description } = req.body;
@@ -77,6 +79,32 @@ const getSub = async (req: Request, res: Response) => {
   }
 };
 
+// piece of middleware to check that the logged in user owns the sub
+
+const ownSub = async (req: Request, res: Response, next: NextFunction) => {
+  console.log("In the ownsub middleware");
+
+  const user: User = res.locals.user;
+  try {
+    const sub = await Sub.findOneOrFail({
+      where: { name: req.params.name },
+    });
+
+    if (sub.username !== user.username) {
+      return res.status(403).json({ error: "You don't own this sub" });
+    }
+
+    console.log("sub:", sub);
+
+    res.locals.sub = sub;
+    return next();
+  } catch (error) {
+    return res.status(500).json({ error: "Something went wrong" });
+  }
+};
+
+// multer image upload middleware
+
 const upload = multer({
   storage: multer.diskStorage({
     destination: "public/images",
@@ -94,14 +122,45 @@ const upload = multer({
   },
 });
 
-const uploadSubImage = async (_: Request, res: Response) => {
-  res.json({ success: true });
+// route for handling image uploads to subs
+
+const uploadSubImage = async (req: Request, res: Response) => {
+  console.log("In the upload image route handler");
+  const sub: Sub = res.locals.sub;
+  console.log("sub:", sub);
+
+  try {
+    const type = req.body.type;
+
+    if (type !== "image" && type !== "banner") {
+      return res.status(400).json({ error: "invalid type" });
+    }
+
+    if (type === "image") {
+      sub.imageUrn = req.file?.filename;
+    } else if (type === "banner") {
+      sub.bannerUrn = req.file?.filename;
+    }
+
+    await sub.save();
+
+    return res.json(sub);
+  } catch (error) {
+    return res.status(500).json({ error: "Something went wrong" });
+  }
 };
 
 const router = Router();
 
 router.post("/", user, auth, createSub);
 router.get("/:name", user, getSub);
-router.post("/:name/image", user, auth, upload.single("file"), uploadSubImage);
+router.post(
+  "/:name/image",
+  user,
+  auth,
+  ownSub,
+  upload.single("file"),
+  uploadSubImage
+);
 
 export default router;
