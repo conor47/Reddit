@@ -86,15 +86,15 @@ const upload = multer({
     },
   }),
   fileFilter: (_, file: any, callback: FileFilterCallback) => {
-    if (file.mimetype === "image/jpeq" || file.mimetype === "image/png") {
+    if (file.mimetype === "image/jpeg" || file.mimetype === "image/png") {
       callback(null, true);
     } else {
-      callback(null, false);
+      callback(new Error("not an image"));
     }
   },
 });
 
-const uploadSubImage = async (req: Request, res: Response) => {
+const uploadSubImage = async (_: Request, res: Response) => {
   res.json({ success: true });
 };
 
