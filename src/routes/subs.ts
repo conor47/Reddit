@@ -3,6 +3,7 @@ import { isEmpty } from "class-validator";
 import { getRepository } from "typeorm";
 import multer, { FileFilterCallback } from "multer";
 import path from "path";
+import fs from "fs";
 
 import User from "../entities/User";
 import Post from "../entities/Post";
@@ -11,7 +12,6 @@ import auth from "../middleware/auth";
 import user from "../middleware/user";
 import { makeId } from "../util/helpers";
 import { NextFunction } from "express-serve-static-core";
-import { resourceLimits } from "worker_threads";
 
 const createSub = async (req: Request, res: Response) => {
   const { name, title, description } = req.body;
@@ -133,19 +133,37 @@ const uploadSubImage = async (req: Request, res: Response) => {
     const type = req.body.type;
 
     if (type !== "image" && type !== "banner") {
+      // if the type is incorrect we instantly delete the file
+      fs.unlinkSync(req.file?.path || "");
       return res.status(400).json({ error: "invalid type" });
     }
 
+    // if the sub already has a an image or a banner we want to delete the old value before uploading a new one
+    let oldImageUrn: string = "";
     if (type === "image") {
+      oldImageUrn = sub.imageUrn || "";
       sub.imageUrn = req.file?.filename;
     } else if (type === "banner") {
+      oldImageUrn = sub.bannerUrn || "";
       sub.bannerUrn = req.file?.filename;
     }
 
     await sub.save();
 
+    console.log(oldImageUrn);
+
+    if (
+      oldImageUrn !== "" &&
+      fs.existsSync(`public\/images\/ser${oldImageUrn}`)
+    )
+      console.log("removing old image...");
+
+    fs.unlinkSync(`public\/images\/${oldImageUrn}`);
+
     return res.json(sub);
   } catch (error) {
+    console.log(error);
+
     return res.status(500).json({ error: "Something went wrong" });
   }
 };

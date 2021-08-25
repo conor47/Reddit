@@ -37,7 +37,7 @@
   },
   "scripts": {
     "start": "ts-node src/server.ts",
-    "server": "nodemon --exec ts-node src/server.ts",
+    "server": "nodemon --delay 500ms --exec ts-node src/server.ts",
     "client": "cd client && npm run dev",
     "typeorm": "ts-node ./node_modules/typeorm/cli.js",
     "dev": "concurrently \"npm run server\" \"npm run client\"  --names server,client",
