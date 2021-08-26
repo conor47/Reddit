@@ -1,4 +1,5 @@
-import { Router, Request, Response } from "express";
+import { Router, Request, Response, request } from "express";
+import { off } from "process";
 import Comment from "../entities/Comment";
 import Post from "../entities/Post";
 import Sub from "../entities/Sub";
@@ -97,6 +98,30 @@ const commentOnPost = async (req: Request, res: Response) => {
   }
 };
 
+// route for fetching all comments on a post
+
+const getPostComments = async (req: Request, res: Response) => {
+  const { identifier, slug } = request.params;
+  try {
+    const post = await Post.findOneOrFail({ identifier, slug });
+
+    const comments = await Comment.find({
+      where: { post },
+      order: { createdAt: "DESC" },
+      relations: ["votes"],
+    });
+
+    if (res.locals.user) {
+      comments.forEach((comment) => comment.setUserVote(res.locals.user));
+    }
+
+    return res.json(comments);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: "Something went wrong" });
+  }
+};
+
 const router = Router();
 
 // if we get to the createPost function it means we have a user as if not an error would have been thrown
@@ -108,5 +133,7 @@ router.get("/", user, getPosts);
 router.get("/:identifier/:slug", user, getPost);
 
 router.post("/:identifier/:slug/comments", user, auth, commentOnPost);
+
+router.get("/:identifier/:slug/comments", user, commentOnPost);
 
 export default router;
