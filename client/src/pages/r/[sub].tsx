@@ -1,29 +1,67 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
-import {  Fragment, useRef } from "react";
+import { ChangeEvent, Fragment, useEffect, useRef, useState } from "react";
 import useSWR from "swr";
 import Image from "next/image";
-import classnames from 'classnames'
+import classnames from "classnames";
 
 import PostCard from "../../components/PostCard";
 import { Sub } from "../../types";
-import {useAuthState} from "../../context/auth"
+import { useAuthState } from "../../context/auth";
+import axios from "axios";
 
 export default function SubName() {
   // Local state
+  const [ownSub, setOwnSub] = useState(false);
   // Global state
-  const {authenticated,user} = useAuthState()
+  const { authenticated, user } = useAuthState();
   // Utils
-  const fileInputRef = useRef()
+  const fileInputRef = useRef(null);
   const router = useRouter();
 
   const subName = router.query.sub;
 
-  const { data: sub, error } = useSWR<Sub>(subName ? `/subs/${subName}` : null);
+  const {
+    data: sub,
+    error,
+    revalidate,
+  } = useSWR<Sub>(subName ? `/subs/${subName}` : null);
+
+  // we will compare the logged in user with the owner of the sub. If they match we set ownSub state to the true.
+  // we do this in a useffect call becuase initally upon first render there will not be a sub. we are getting the sub through a
+  // useSWR call
+
+  useEffect(() => {
+    if (!sub) return;
+    setOwnSub(authenticated && user.username === sub.username);
+  }, [sub]);
 
   if (error) {
     router.push("/");
   }
+
+  const openFileInput = (type: string) => {
+    if (!ownSub) return;
+    fileInputRef.current.name = type;
+    fileInputRef.current.click();
+  };
+
+  const uploadImage = async (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files[0];
+
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("type", fileInputRef.current.name);
+
+    try {
+      const res = await axios.post<Sub>(`/subs/${sub.name}/image`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      revalidate();
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   let postsMarkup;
   if (!sub) {
@@ -45,11 +83,21 @@ export default function SubName() {
       </Head>
       {sub && (
         <Fragment>
-          input type="file" hidden={true} ref={fileInputRef} />
+          <input
+            type="file"
+            hidden={true}
+            ref={fileInputRef}
+            onChange={uploadImage}
+          />
           {/* sub info and images */}
           <div>
             {/* Banner image */}
-            <div className="bg-blue-500">
+            <div
+              className={classnames("bg-blue-500", {
+                "cursor-pointer": ownSub,
+              })}
+              onClick={() => openFileInput("banner")}
+            >
               {sub.bannerUrl ? (
                 <div
                   className="h-40 bg-blue-500"
@@ -71,9 +119,12 @@ export default function SubName() {
                   <Image
                     src={sub.imageUrl}
                     alt="Sub"
-                    className="rounded-full"
+                    className={classnames("rounded-full", {
+                      "cursor-pointer": ownSub,
+                    })}
                     width={70}
                     height={70}
+                    onClick={() => openFileInput("image")}
                   />
                 </div>
                 <div className="pt-1 pl-24">

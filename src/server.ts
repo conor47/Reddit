@@ -31,6 +31,9 @@ app.use(
   })
 );
 
+// making public directory availabl
+app.use(express.static("public"));
+
 // we do not need to declare the types for req and res here as they are inferred
 app.get("/", (_, res) => {
   res.send("hello world");
@@ -39,8 +42,6 @@ app.use("/api/auth", authRoutes);
 app.use("/api/posts", postRoutes);
 app.use("/api/subs", subRoutes);
 app.use("/api/misc", miscRoutes);
-
-app.use(express.static("/public"));
 
 app.listen(PORT, async () => {
   console.log(`Server running at http://localhost:${PORT}`);
