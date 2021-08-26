@@ -101,7 +101,7 @@ const commentOnPost = async (req: Request, res: Response) => {
 // route for fetching all comments on a post
 
 const getPostComments = async (req: Request, res: Response) => {
-  const { identifier, slug } = request.params;
+  const { identifier, slug } = req.params;
   try {
     const post = await Post.findOneOrFail({ identifier, slug });
 
@@ -134,6 +134,6 @@ router.get("/:identifier/:slug", user, getPost);
 
 router.post("/:identifier/:slug/comments", user, auth, commentOnPost);
 
-router.get("/:identifier/:slug/comments", user, commentOnPost);
+router.get("/:identifier/:slug/comments", user, getPostComments);
 
 export default router;
