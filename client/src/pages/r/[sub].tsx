@@ -5,6 +5,7 @@ import useSWR from "swr";
 import Image from "next/image";
 import classnames from "classnames";
 
+import Sidebar from "../../components/Sidebar";
 import PostCard from "../../components/PostCard";
 import { Sub } from "../../types";
 import { useAuthState } from "../../context/auth";
@@ -141,6 +142,7 @@ export default function SubName() {
           {/* posts and sidebar */}
           <div className="container flex pt-5">
             <div className="w-160">{postsMarkup}</div>
+            <Sidebar sub={sub} />
           </div>
         </Fragment>
       )}
