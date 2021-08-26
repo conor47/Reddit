@@ -28,7 +28,7 @@ export default function PostPage() {
     identifier && slug ? `/posts/${identifier}/${slug}` : null
   );
 
-  const { data: comments } = useSWR<Comment[]>(
+  const { data: comments, revalidate } = useSWR<Comment[]>(
     identifier && slug ? `/posts/${identifier}/${slug}/comments` : null
   );
 
@@ -48,7 +48,7 @@ export default function PostPage() {
       value = 0;
 
     try {
-      const res = await axios.post("/misc/vote", {
+      await axios.post("/misc/vote", {
         identifier,
         slug,
         value,
@@ -57,7 +57,7 @@ export default function PostPage() {
         commentIdentifier: comment?.identifier,
       });
 
-      console.log(res.data);
+      revalidate();
     } catch (error) {
       console.log(error);
     }
@@ -94,7 +94,7 @@ export default function PostPage() {
               <>
                 <div className="flex">
                   {/* Vote section */}
-                  <div className="w-10 py-3 text-center rounded-l">
+                  <div className="flex-shrink-0 w-10 py-2 text-center rounded-l">
                     {/* Upvote */}
                     <div
                       className="w-6 mx-auto text-gray-400 rounded cursor-pointer hover:bg-gray-300 hover:text-red-500"
@@ -119,7 +119,7 @@ export default function PostPage() {
                       ></i>
                     </div>
                   </div>
-                  <div className="p-2">
+                  <div className="py-2 pr-2">
                     <div className="flex items-center">
                       <p className="text-gray-500 text-excess">
                         Posted by
@@ -162,10 +162,34 @@ export default function PostPage() {
                     </div>
                   </div>
                 </div>
+                {/* Comment input */}
+                <div className="pl-10 pr-6 mb-4">
+                  {authenticated ? (
+                    <p>Comment input </p>
+                  ) : (
+                    <div className="flex items-center justify-between px-2 py-4 border border-gray-200 rounded">
+                      <p className="font-semibold text-gray-400">
+                        Log in or sign up to leave a comment
+                      </p>
+                      <div>
+                        <Link href="/login">
+                          <a className="px-4 py-1 mr-4 hollow blue button">
+                            Login
+                          </a>
+                        </Link>
+                        <Link href="/register">
+                          <a className="px-4 py-1 blue button">Sign up</a>
+                        </Link>
+                      </div>
+                    </div>
+                  )}
+                </div>
+                <hr />
+                {/* Comments */}
                 {comments?.map((comment) => (
                   <div className="flex" key={comment.identifier}>
                     {/* vote section */}
-                    <div className="w-10 py-3 text-center rounded-l">
+                    <div className="flex-shrink-0 w-10 py-2 text-center rounded-l">
                       {/* Upvote */}
                       <div
                         className="w-6 mx-auto text-gray-400 rounded cursor-pointer hover:bg-gray-300 hover:text-red-500"
@@ -190,7 +214,7 @@ export default function PostPage() {
                         ></i>
                       </div>
                     </div>
-                    <div className="p-2">
+                    <div className="py-2 pr-2">
                       <p className="mb-1 text-xs leading-none">
                         <Link href={`/u/${comment.username}`}>
                           <a className="mr-1 font-bold hover:underline">
