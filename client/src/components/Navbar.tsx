@@ -39,6 +39,7 @@ const Navbar: React.FC = () => {
       .catch((err) => console.log(err));
   };
 
+  // function for implementing sub search. We use a setTimout to limit the user requests. 
   const searchSubs = async () => {
     clearTimeout(timer)
     setTimer(setTimeout(async() => {
@@ -55,6 +56,7 @@ const Navbar: React.FC = () => {
    
   }
 
+  // function for direction a user to a subreddit when clicked in the search bar. Clears setName so that the search bar clears
   const goToSub = (subName:string) => {
     router.push(`/r/${subName}`)
     setName('')
