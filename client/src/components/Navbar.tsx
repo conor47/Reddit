@@ -63,7 +63,7 @@ const Navbar: React.FC = () => {
   }
 
   return (
-    <div className="fixed inset-x-0 top-0 z-10 flex items-center justify-center h-12 px-5 bg-white">
+    <div className="fixed inset-x-0 top-0 z-10 flex items-center justify-between h-12 px-5 bg-white">
       {/* logo and title */}
       <div className="flex items-center">
         <Link href="/">
@@ -71,18 +71,21 @@ const Navbar: React.FC = () => {
             <RedditLogo className="w-8 h-8 mr-2"></RedditLogo>
           </a>
         </Link>
-        <span className="text-2xl font-semibold">
+        {/* the hidden class below means that on small screens this span will be hidden. We then specify lg:block which means on large
+        screens it will display. Tailwind takes a small screen up approach by default */}
+        <span className="hidden text-2xl font-semibold lg:block">
           <Link href="/">reddit</Link>
         </span>
       </div>
       {/* Search bar */}
-      <div className="relative flex items-center mx-auto bg-gray-100 border rounded hover:border-blue-500 hover:bg-white">
+      <div className="max-w-full px-4 w-160">
+      <div className="relative flex items-center bg-gray-100 border rounded hover:border-blue-500 hover:bg-white">
         <i className="pl-4 pr-3 text-gray-500 fas fa-search"></i>
         <input
           value={name}
           onChange={e => setName(e.target.value)}
           type="text"
-          className="py-1 pr-3 bg-transparent rounded focus:outline-none w-160"
+          className="py-1 pr-3 bg-transparent rounded focus:outline-none "
           placeholder="Search"
         />
         <div className="absolute left-0 right-0 bg-white" style={{top:'100%'}}>
@@ -97,13 +100,14 @@ const Navbar: React.FC = () => {
           ))}
         </div>
       </div>
+      </div>
       {/* Auth buttons */}
       <div className="flex">
         {!loading &&
           (authenticated ? (
             // show logout button
             <button
-              className="w-32 py-1 mr-4 leading-5 hollow blue button"
+              className="hidden w-20 py-1 mr-4 leading-5 sm:block lg:w-32 hollow blue button"
               onClick={logout}
             >
               Logout
@@ -111,12 +115,12 @@ const Navbar: React.FC = () => {
           ) : (
             <Fragment>
               <Link href="/login">
-                <a className="w-32 py-1 mr-4 leading-5 hollow blue button">
+                <a className="hidden w-20 py-1 mr-4 leading-5 sm:block lg:w-32 hollow blue button">
                   Log in
                 </a>
               </Link>
               <Link href="/register">
-                <a className="w-32 py-1 leading-5 blue button">Sign Up</a>
+                <a className="hidden w-20 py-1 leading-5 sm:block lg:w-32 blue button">Sign Up</a>
               </Link>
             </Fragment>
           ))}
