@@ -21,8 +21,8 @@ const createSub = async (req: Request, res: Response) => {
   try {
     let errors: any = {};
 
-    if (isEmpty(name.trim)) errors.name = "Name must not be empty";
-    if (isEmpty(title.trim)) errors.title = "Title must not be empty";
+    if (isEmpty(name)) errors.name = "Name must not be empty";
+    if (isEmpty(title)) errors.title = "Title must not be empty";
 
     const sub = await getRepository(Sub)
       // using querybuilder we build a custom query on the subs table
