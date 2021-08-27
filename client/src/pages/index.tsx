@@ -2,10 +2,10 @@
 /* eslint-disable @next/next/no-img-element */
 import Head from "next/head";
 import { GetServerSideProps } from "next";
-import { Fragment } from "react";
+import { Fragment, useEffect, useState } from "react";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import useSWR from "swr";
+import useSWR, { useSWRInfinite } from "swr";
 import Image from "next/image";
 
 import { Post, Sub } from "../types";
@@ -31,10 +31,46 @@ export default function Home() {
   //     .then((res) => setPosts(res.data))
   //     .catch((err) => console.log(err));
   // }, []);
-  const { data: posts } = useSWR<Post[]>("/posts");
+
+  // for tracking the bottom post for infinite loading
+  const [observedPost, setObservedPost] = useState('')
+
+  // const { data: posts } = useSWR<Post[]>("/posts");
   const { data: topSubs } = useSWR<Sub[]>("/misc/top-subs");
 
   const {authenticated} = useAuthState()
+
+  const { data, error, mutate, size: page, setSize: setPage, isValidating } = useSWRInfinite<Post[]>(
+    index =>
+      `/posts/?page=${index}`,
+  );
+
+
+  const posts: Post[] = data ? [].concat(...data) : [];
+  const isLoadingInitialData = !data && !error;
+
+  useEffect(() => {
+    if(!posts || posts.length === 0) return
+    
+    const id = posts[posts.length - 1].identifier
+    if(id !== observedPost){
+      setObservedPost(id)
+      observerElement(document.getElementById(id))
+    }
+  },[posts])
+
+  // we will use the intersection API to observe the last post on the page and track when the bottom of that post / div comes 
+  // into view on the viewport
+  const observerElement = (element: HTMLElement) => {
+    if(!element) return
+    const observer = new IntersectionObserver((entries) => {
+      if(entries[0].isIntersecting === true){
+        setPage(page+1)
+        observer.unobserve(element)
+      }
+    }, { threshold: 1})
+    observer.observe(element)
+  }
 
   return (
     <Fragment>

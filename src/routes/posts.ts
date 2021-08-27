@@ -31,12 +31,18 @@ const createPost = async (req: Request, res: Response) => {
 
 // A route for returning all of the recent posts across the subs
 
-const getPosts = async (_: Request, res: Response) => {
+const getPosts = async (req: Request, res: Response) => {
+  // variables for implementing pagination
+  const currentPage: number = (req.query.page || 0 ) as number
+  const postsPerPage: number = (req.query.count || 8 ) as number
+
   try {
     // we fetch all posts. We order them by createdAt in descending order
     const posts = await Post.find({
       order: { createdAt: "DESC" },
       relations: ["comments", "votes", "sub"],
+      skip: currentPage * postsPerPage,
+      take : postsPerPage
     });
 
     // if the user is logged in we want to return the users vote on each post. This will allow us to
