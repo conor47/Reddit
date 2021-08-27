@@ -44,6 +44,7 @@ export interface Comment {
   identifier: string;
   body: string;
   username: string;
+  post? : Post
   // virtuals
   userVote: number;
   voteScore: number;
