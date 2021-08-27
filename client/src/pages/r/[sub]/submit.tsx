@@ -67,6 +67,10 @@ export default function Submit() {
     )
 }
 
+// we will perform a server side check to see whether the current user is authenticated.
+// If the user is not logged in they will be redirected to the login page when to try to visit this submit page. This page 
+// will be server side rendered so that the user will not see the /submit page at all
+
 export const getServerSideProps : GetServerSideProps = async({req,res}) => {
     try {
         const cookie = req.headers.cookie
