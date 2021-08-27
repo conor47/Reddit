@@ -40,14 +40,14 @@ export default function Home() {
 
   const {authenticated} = useAuthState()
 
-  const { data, error, mutate, size: page, setSize: setPage, isValidating } = useSWRInfinite<Post[]>(
+  const { data, error, mutate, size: page, setSize: setPage, isValidating, revalidate } = useSWRInfinite<Post[]>(
     index =>
-      `/posts/?page=${index}`,
+      `/posts/?page=${index}`, {revalidateAll:true}
   );
 
 
   const posts: Post[] = data ? [].concat(...data) : [];
-  const isLoadingInitialData = !data && !error;
+
 
   useEffect(() => {
     if(!posts || posts.length === 0) return
@@ -80,9 +80,11 @@ export default function Home() {
       <div className="container flex pt-4 mx-auto">
         {/* Posts feed */}
         <div className="w-full px-4 md:w-160 md:p-0">
+          {isValidating && <p className="text-lg text-center">Loading ...</p>}
           {posts?.map((post) => (
-            <PostCard post={post} key={post.identifier} />
+            <PostCard post={post} key={post.identifier} revalidate={revalidate}/>
           ))}
+          {isValidating && posts.length > 0 && <p className="text-lg text-center">Loading more ...</p>}
         </div>
         {/* Sidebar */}
         <div className="hidden ml-6 md:block w-80">
