@@ -16,6 +16,8 @@ class MyDocument extends Document {
     return (
       <Html>
         <Head>
+          <title>Reddit</title>
+          <link rel="icon" type="image/svg+xml" href="/redditLogo.svg" />
           <link rel="preconnect" href="https://fonts.googleapis.com" />
           <link
             rel="preconnect"
@@ -31,7 +33,7 @@ class MyDocument extends Document {
             href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
             integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ=="
             crossOrigin="anonymous"
-            referrerpolicy="no-referrer"
+            referrerPolicy="no-referrer"
           />
         </Head>
         <body className="font-body" style={{ backgroundColor: "#DAE0E6" }}>

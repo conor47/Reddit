@@ -1,6 +1,6 @@
 module.exports = {
   images: {
-    domains: ["www.gravatar.com", "localhost"],
+    domains: ['www.gravatar.com', process.env.APP_DOMAIN],
   },
   webpack(config) {
     config.module.rules.push({
@@ -11,7 +11,7 @@ module.exports = {
         and: [/\.(js|ts)x?$/],
       },
 
-      use: ["@svgr/webpack"],
+      use: ['@svgr/webpack'],
     });
 
     return config;
