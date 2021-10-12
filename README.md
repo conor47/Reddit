@@ -1,3 +1,5 @@
+## General info
+This project is a clone of the popular internet website Reddit.com.
 Features core functionality such as profile creation, creating subreddits, creating posts, leaving comments, voting on posts and comments etc. 
 
 ## View live
